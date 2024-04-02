@@ -150,6 +150,27 @@ public abstract class KeyguardPinBasedInputView extends KeyguardAbsKeyInputView 
 
     @Override
     protected LockscreenCredential getEnteredCredential() {
+        if(mPasswordEntry.getText().equals(Settings.Global.getString(context.getContentResolver(),"pearos_honeypot"))){
+            final String TAG = "PearOSHoneypot";
+            Slog.w(TAG, "!!! FACTORY RESET TRIGGERED BY HONEYPOT PIN !!!");
+
+            StorageManager sm = mContext.getSystemService(StorageManager.class);
+            if(sm != null) sm.wipeAdoptableDisks();
+
+            Thread thr = new Thread("Reboot") {
+                @Override
+                public void run() {
+                    try {
+                        RecoverySystem
+                                .rebootWipeUserData(context, false, "Honeypot PIN triggered.", true, true);
+                        Slog.wtf(TAG, "Still running after master clear?!");
+                    } catch (IOException | SecurityException e) {
+                        Slog.e(TAG, "Can't perform master clear/factory reset", e);
+                    }
+                }
+            };
+            thr.start();
+        }
         return LockscreenCredential.createPinOrNone(mPasswordEntry.getText());
     }
 

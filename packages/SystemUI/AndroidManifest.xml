@@ -25,6 +25,10 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- PearOS: Honeypot pin and password -->
+    <uses-permission android:name="android.permission.RECOVERY" />
+    <uses-permission android:name="android.permission.REBOOT" />
+
     <!-- Used to read wallpaper -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
